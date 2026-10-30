@@ -95,8 +95,13 @@ def validate_routing(document: dict) -> None:
             "name": "PROXY", "type": "select", "include-all-proxies": True
         }:
             raise ValueError("显式 PROXY 组必须通过 include-all-proxies 动态引用面板节点")
-        if group.get("type") != "select" or "use" in group:
-            raise ValueError(f"转换后策略组必须为 select 且不能含 use：{name}")
+        if group.get("type") not in {"select", "url-test"} or "use" in group:
+            raise ValueError(f"转换后策略组必须为 select/url-test 且不能含 use：{name}")
+        if group.get("type") == "url-test":
+            if not isinstance(group.get("url"), str) or not group["url"]:
+                raise ValueError(f"测速组缺少测试 URL：{name}")
+            if not isinstance(group.get("interval"), int) or group["interval"] <= 0:
+                raise ValueError(f"测速组必须有正整数 interval：{name}")
         names.add(name)
     known = names | BUILTINS | {"PROXY"}
     edges = {}
@@ -104,8 +109,8 @@ def validate_routing(document: dict) -> None:
         if group["name"] == "PROXY":
             edges["PROXY"] = []
             continue
-        refs = group.get("proxies")
-        if not isinstance(refs, list) or not refs:
+        refs = group.get("proxies", [])
+        if not isinstance(refs, list) or (not refs and group.get("include-all-proxies") is not True):
             raise ValueError(f"策略组没有可用候选项：{group['name']}")
         for ref in refs:
             if not isinstance(ref, str) or ref not in known:
@@ -154,10 +159,11 @@ def validate_routing(document: dict) -> None:
 
 
 def convert(document: dict, inline: bool = False) -> tuple[dict, list[str]]:
-    """保留业务策略和分流规则，将依赖外部节点提供者的测速组折叠为 PROXY。
+    """保留非地区策略组及独立节点选择能力，移除依赖地区筛选的组。
 
-    地区分组和自动测速无法从不含实际节点的远程路由片段中可靠恢复。
-    因此明确折叠这些组，不能把所有节点伪装成某个地区的测速结果。
+    使用 Mihomo 的 include-all-proxies 动态收集面板节点，代替远程片段
+    禁止使用的 use。带 filter 的提供者测速组视为地区组；无地区过滤
+    的自动测速组保留原参数，对实际节点测速，不能只测 PROXY 单个组。
     """
     if not isinstance(document, dict):
         raise ValueError("输入 YAML 顶层必须为映射")
@@ -175,9 +181,9 @@ def convert(document: dict, inline: bool = False) -> tuple[dict, list[str]]:
         if not name.strip() or name != name.strip() or name in names:
             raise ValueError(f"输入策略组名称为空、重复或含首尾空格：{name}")
         names.append(name)
-        if group.get("type") in {"url-test", "fallback", "load-balance"} and group.get("use"):
+        if group.get("type") in {"url-test", "fallback", "load-balance"} and group.get("use") and group.get("filter"):
             collapsed.append(name)
-        elif group.get("type") != "select":
+        elif group.get("type") not in {"select", "url-test"}:
             raise ValueError(f"不支持转换此策略组类型，请人工检查：{name}")
     groups = []
     for original in original_groups:
@@ -190,13 +196,21 @@ def convert(document: dict, inline: bool = False) -> tuple[dict, list[str]]:
         for ref in refs:
             if not isinstance(ref, str):
                 raise ValueError("策略组候选项必须为字符串")
-            target = "PROXY" if ref in collapsed else ref
-            if target not in mapped:
-                mapped.append(target)
-        # use 原本把机场节点附加在候选项末尾；改用面板自己的节点选择组。
-        if original.get("use") and "PROXY" not in mapped:
-            mapped.append("PROXY")
-        groups.append({"name": original["name"], "type": "select", "proxies": mapped})
+            # 地区分组属于本次明确排除的部分，其余候选组保持原顺序。
+            if ref not in collapsed and ref not in mapped:
+                mapped.append(ref)
+        group = {"name": original["name"], "type": original["type"]}
+        if mapped:
+            group["proxies"] = mapped
+        # 每个业务组分别收集实际节点，可以独立选择，避免共用 PROXY 选择状态。
+        if original.get("use"):
+            group["include-all-proxies"] = True
+        # 自动选择保留测试地址、周期和容差，业务 select 不添加无关测速参数。
+        if original["type"] == "url-test":
+            for key in ("url", "interval", "tolerance", "lazy", "timeout", "max-failed-times", "expected-status"):
+                if key in original:
+                    group[key] = copy.deepcopy(original[key])
+        groups.append(group)
 
     rules = copy.deepcopy(document.get("rules", []))
     if not isinstance(rules, list):
@@ -255,7 +269,7 @@ def build_output(
         validate_routing(result)
     header = (
         "# 3x-ui Clash/Mihomo 全局路由片段；请与面板生成的订阅合并使用。\n"
-        "# 节点由面板的 PROXY 组提供；地区组与自动测速组已合并到 PROXY。\n"
+        "# 节点由面板提供；保留业务独立选点和自动测速，移除地区分组。\n"
         f"# 输入 SHA256: {hashlib.sha256(raw).hexdigest()}\n"
     )
     content = header + yaml.safe_dump(result, allow_unicode=True, sort_keys=False, width=120)
@@ -286,7 +300,7 @@ def main() -> int:
         return 1
     print(f"已生成：{args.output.resolve()}")
     print(f"策略组 {len(result['proxy-groups'])}；规则集 {len(result['rule-providers'])}；规则 {len(result['rules'])}")
-    print(f"已将 {len(collapsed)} 个测速/地区组折叠为面板 PROXY 组")
+    print(f"已移除 {len(collapsed)} 个地区组；自动测速及业务独立选点已保留")
     return 0
 
 

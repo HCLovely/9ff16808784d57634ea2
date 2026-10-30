@@ -1,151 +1,179 @@
 # 3x-ui Clash/Mihomo 全局路由片段；请与面板生成的订阅合并使用。
-# 节点由面板的 PROXY 组提供；地区组与自动测速组已合并到 PROXY。
+# 节点由面板提供；保留业务独立选点和自动测速，移除地区分组。
 # 输入 SHA256: d58c4a5ce8bf325bd9f7787204dd92aa7b7085dd86433b23d2a20b4ed3e1f69e
 proxy-groups:
 - name: 🚀 手动选择
   type: select
   proxies:
-  - PROXY
+  - ♻️ 自动选择
+  include-all-proxies: true
+- name: ♻️ 自动选择
+  type: url-test
+  include-all-proxies: true
+  url: https://www.gstatic.com/generate_204
+  interval: 300
+  tolerance: 50
 - name: 💬 即时通讯
   type: select
   proxies:
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
   - 🎯 全球直连
 - name: 🌐 社交媒体
   type: select
   proxies:
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
   - 🎯 全球直连
+  include-all-proxies: true
 - name: 🚀 GitHub
   type: select
   proxies:
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
   - 🎯 全球直连
 - name: 🤖 ChatGPT
   type: select
   proxies:
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
+  include-all-proxies: true
 - name: 🤖 AI服务
   type: select
   proxies:
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
+  include-all-proxies: true
 - name: 🎶 TikTok
   type: select
   proxies:
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
+  include-all-proxies: true
 - name: 📹 YouTube
   type: select
   proxies:
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
+  include-all-proxies: true
 - name: 🎥 Netflix
   type: select
   proxies:
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
+  include-all-proxies: true
 - name: 🎥 DisneyPlus
   type: select
   proxies:
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
+  include-all-proxies: true
 - name: 🎥 HBO
   type: select
   proxies:
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
+  include-all-proxies: true
 - name: 🎥 PrimeVideo
   type: select
   proxies:
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
+  include-all-proxies: true
 - name: 🎥 AppleTV+
   type: select
   proxies:
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
   - 🎯 全球直连
+  include-all-proxies: true
 - name: 🎥 Emby
   type: select
   proxies:
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
   - 🎯 全球直连
+  include-all-proxies: true
 - name: 🎻 Spotify
   type: select
   proxies:
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
   - 🎯 全球直连
+  include-all-proxies: true
 - name: 📺 Bahamut
   type: select
   proxies:
-  - PROXY
   - 🚀 手动选择
   - 🎯 全球直连
+  include-all-proxies: true
 - name: 🌎 国外媒体
   type: select
   proxies:
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
+  include-all-proxies: true
 - name: 🛒 国外电商
   type: select
   proxies:
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
   - 🎯 全球直连
+  include-all-proxies: true
 - name: 📢 谷歌FCM
   type: select
   proxies:
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
   - 🎯 全球直连
 - name: 🇬 谷歌服务
   type: select
   proxies:
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
+  include-all-proxies: true
 - name: 🍎 苹果服务
   type: select
   proxies:
   - 🎯 全球直连
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
+  include-all-proxies: true
 - name: Ⓜ️ 微软服务
   type: select
   proxies:
   - 🎯 全球直连
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
+  include-all-proxies: true
 - name: 🎮 游戏平台
   type: select
   proxies:
   - 🎯 全球直连
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
+  include-all-proxies: true
 - name: 🎮 Steam
   type: select
   proxies:
   - 🎯 全球直连
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
+  include-all-proxies: true
 - name: 🚀 测速工具
   type: select
   proxies:
   - 🎯 全球直连
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
+  include-all-proxies: true
 - name: 🐟 漏网之鱼
   type: select
   proxies:
   - 🚀 手动选择
-  - PROXY
+  - ♻️ 自动选择
   - 🎯 全球直连
+  include-all-proxies: true
 - name: 🔀 非标端口
   type: select
   proxies:
