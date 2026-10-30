@@ -1,0 +1,6 @@
+# 防止 Windows checkout 改写快照换行，导致输入 SHA256 或自动更新反复变化。
+*.py text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml -text
+requirements.txt text eol=lf
