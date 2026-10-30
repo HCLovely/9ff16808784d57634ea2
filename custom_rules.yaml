@@ -1,0 +1,59 @@
+# 自定义规则：按填写顺序优先于所有上游规则匹配。
+# 取消下方示例注释并替换域名后，将 rules: [] 改为 rules:。
+# 可用目标：PROXY（面板代理）、DIRECT（直连）、REJECT（拦截），以及生成配置中的策略组名。
+# 若填写 MATCH，将提前兜底，后续上游规则不再匹配，请谨慎使用。
+# 不支持在此文件定义新策略组或规则集；RULE-SET 只能引用上游已有的规则提供者。
+# 本地更新两份配置：python update_rules.py --input sources/Custom_Clash.yaml
+# 只读检查：python update_rules.py --input sources/Custom_Clash.yaml --check
+# 指定其他文件：python update_rules.py --custom-rules path/to/rules.yaml
+# 单独转换同样支持：python convert_clash.py --custom-rules path/to/rules.yaml
+# 提交并推送本文件后，会触发 GitHub Actions 更新；后续定时更新也会持续合并。
+# 默认文件缺失时不添加规则；指定 --custom-rules 时文件必须存在。
+rules: []
+  # - DOMAIN-SUFFIX,example.com,PROXY
+  # - DOMAIN-SUFFIX,example.cn,DIRECT
+  # - DOMAIN,ads.example.com,REJECT
+  - IP-CIDR,10.128.13.0/24,DIRECT
+  - SRC-PORT,28596,DIRECT
+  - DST-PORT,28596,DIRECT
+  - DOMAIN-SUFFIX,tailscale.com,🚀 手动选择 #匹配域名后缀(交由Proxy代理服务器组)
+  - DOMAIN-SUFFIX,ddnsto.net,DIRECT #匹配域名后缀(交由Proxy代理服务器组)
+  - DOMAIN-SUFFIX,key-hub.eu,DIRECT #匹配域名后缀(交由Proxy代理服务器组)
+  - DOMAIN-SUFFIX,alienwarearena.com,🚀 手动选择
+  - DOMAIN-SUFFIX,hcaptcha.com,🚀 手动选择
+  - DOMAIN-SUFFIX,edu.cn,DIRECT
+  - DOMAIN-SUFFIX,folo.is,🚀 手动选择 #匹配域名后缀(交由Proxy代理服务器组)
+  - DOMAIN,cdn.jsdelivr.net,🚀 手动选择 #匹配域名(交由Proxy代理服务器组)
+  - DOMAIN-SUFFIX,opquests.com,🚀 手动选择 #匹配域名(交由Proxy代理服务器组)
+  - DOMAIN-SUFFIX,fanatical.com,🚀 手动选择 #匹配域名(交由Proxy代理服务器组)
+  - DOMAIN-SUFFIX,sayloai.com,🚀 手动选择 #匹配域名(交由Proxy代理服务器组)
+  - DOMAIN-SUFFIX,researchgate.net,🚀 手动选择 #匹配域名(交由Proxy代理服务器组)
+  - DOMAIN-SUFFIX,nodejs.org,🚀 手动选择 #匹配域名(交由Proxy代理服务器组)
+  - DOMAIN-SUFFIX,www.cataboom.com,🚀 手动选择 #匹配域名(交由Proxy代理服务器组)
+  - DOMAIN-KEYWORD,roogoo,🚀 手动选择 #匹配域名(交由Proxy代理服务器组)
+  - DOMAIN-KEYWORD,journals.sagepub.com,🚀 手动选择 #匹配域名(交由Proxy代理服务器组)
+  - DOMAIN-SUFFIX,bgm.tv,🚀 手动选择 #匹配域名(交由Proxy代理服务器组)
+  - DOMAIN-SUFFIX,steamcontent.com,DIRECT
+  - DOMAIN-SUFFIX,akamaihd.net,DIRECT
+  - DOMAIN-KEYWORD,18comic,DIRECT
+  - DOMAIN-KEYWORD,jmcomic-,DIRECT
+  - DOMAIN-KEYWORD,jm18c,DIRECT
+  - DOMAIN-KEYWORD,comic18j,DIRECT
+  - DOMAIN-KEYWORD,jmcomic,🚀 手动选择
+  - DOMAIN-KEYWORD,18comic-,DIRECT #匹配域名关键字(交由Proxy代理服务器组)
+  - DOMAIN-SUFFIX,naiq.cc,🚀 手动选择
+  - DOMAIN-SUFFIX,steamserver.net,🚀 手动选择 #匹配域名(交由Proxy代理服务器组)
+  - DOMAIN-SUFFIX,jable.tv,🚀 手动选择 #匹配域名(交由Proxy代理服务器组)
+  - DOMAIN-SUFFIX,api.dler.io,🚀 手动选择 #匹配域名(交由Proxy代理服务器组)
+  - DOMAIN-SUFFIX,api.wcc.bes,🚀 手动选择 #匹配域名(交由Proxy代理服务器组)
+  - DOMAIN-SUFFIX,api.asailor.org,🚀 手动选择 #匹配域名(交由Proxy代理服务器组)
+  - DOMAIN-SUFFIX,moxing69.com,🚀 手动选择
+  - DOMAIN-SUFFIX,moxing.app,🚀 手动选择
+  - DOMAIN-SUFFIX,www.devglan.com,🚀 手动选择
+  - DOMAIN-SUFFIX,skyeysnow.com,🚀 手动选择
+  - DOMAIN-SUFFIX,www.naiquan04.com,🚀 手动选择
+  - DOMAIN-SUFFIX,teaeee.com,🚀 手动选择
+  - DOMAIN-SUFFIX,files.pythonhosted.org,🚀 手动选择
+  - DOMAIN-SUFFIX,pypi.org,🚀 手动选择
+  - DOMAIN-SUFFIX,exa.ai,🚀 手动选择
+  - DOMAIN-SUFFIX,v1.hitokoto.cn,🚀 手动选择

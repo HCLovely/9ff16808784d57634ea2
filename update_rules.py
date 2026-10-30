@@ -13,19 +13,21 @@ import sys
 
 import yaml
 
-from convert_clash import DEFAULT_SOURCE, build_output, read_source, write_atomic
+from convert_clash import (
+    DEFAULT_CUSTOM_RULES, DEFAULT_SOURCE, build_output, read_custom_rules, read_source, write_atomic,
+)
 
 
 ROOT = Path(__file__).resolve().parent
 
 
-def prepare_files(raw: bytes) -> dict[str, str]:
+def prepare_files(raw: bytes, custom_rules: list[str] | None = None) -> dict[str, str]:
     """两种模式都转换并校验成功后才允许写盘，防止半成品被发布。
 
     快照采用 UTF-8，保留源文件的换行；SHA256 对应下载到的原始字节。
     """
-    remote, _, _ = build_output(raw)
-    inline, _, _ = build_output(raw, inline=True)
+    remote, _, _ = build_output(raw, custom_rules=custom_rules)
+    inline, _, _ = build_output(raw, inline=True, custom_rules=custom_rules)
     return {
         "sources/Custom_Clash.yaml": raw.decode("utf-8"),
         "Custom_Clash_3xui.yaml": remote,
@@ -56,9 +58,14 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", default=DEFAULT_SOURCE, help="HTTPS 地址或本地 YAML 路径")
     parser.add_argument("--check", action="store_true", help="只读检查；存在需更新文件时返回 1")
+    parser.add_argument("--custom-rules", type=Path, help="自定义规则路径；默认读取项目根目录 custom_rules.yaml")
     args = parser.parse_args()
     try:
-        files = prepare_files(read_source(args.input))
+        custom_rules = read_custom_rules(
+            args.custom_rules if args.custom_rules is not None else DEFAULT_CUSTOM_RULES,
+            optional=args.custom_rules is None,
+        )
+        files = prepare_files(read_source(args.input), custom_rules=custom_rules)
         changed = update_files(files, ROOT, check=args.check)
     except (OSError, ValueError, yaml.YAMLError) as error:
         print(f"更新失败：{error}", file=sys.stderr)

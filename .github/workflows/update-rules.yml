@@ -13,6 +13,7 @@ on:
       - 'update_rules.py'
       - 'requirements.txt'
       - 'sources/Custom_Clash.yaml'
+      - 'custom_rules.yaml'
 
 # 只允许更新本仓库内容，不需要额外保存个人访问令牌。
 permissions:

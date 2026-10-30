@@ -25,7 +25,28 @@ DEFAULT_SOURCE = (
     "refs/heads/main/cfg/yaml/Custom_Clash.yaml"
 )
 MAX_BYTES = 2 * 1024 * 1024
+DEFAULT_CUSTOM_RULES = Path(__file__).resolve().parent / "custom_rules.yaml"
 BUILTINS = {"DIRECT", "REJECT", "REJECT-DROP", "REJECT-TINYGIF", "PASS", "GLOBAL"}
+
+
+def read_custom_rules(path: Path, optional: bool = False) -> list[str]:
+    """读取本地自定义规则；默认文件缺失时保持原有行为，显式指定的路径必须存在。
+
+    仅接受 rules 列表，拒绝拼错的字段，避免配置被静默忽略。
+    规则目标在与上游配置合并后统一校验。
+    """
+    if optional and not path.exists():
+        return []
+    document = yaml.safe_load(read_source(str(path)).decode("utf-8-sig"))
+    if not isinstance(document, dict) or set(document) != {"rules"}:
+        raise ValueError("自定义配置必须只包含 rules 字段；无规则时使用 rules: []")
+    rules = document["rules"]
+    if not isinstance(rules, list):
+        raise ValueError("自定义 rules 必须为列表")
+    for rule in rules:
+        if not isinstance(rule, str) or not rule.strip():
+            raise ValueError("自定义规则必须为非空字符串")
+    return rules
 
 
 def read_source(source: str) -> bytes:
@@ -221,9 +242,17 @@ def write_atomic(path: Path, content: str) -> None:
             temporary.unlink()
 
 
-def build_output(raw: bytes, inline: bool = False) -> tuple[str, dict, list[str]]:
+def build_output(
+    raw: bytes, inline: bool = False, custom_rules: list[str] | None = None
+) -> tuple[str, dict, list[str]]:
     """从同一份源数据生成确定性的输出；无时间戳，避免无变化的自动提交。"""
     result, collapsed = convert(yaml.safe_load(raw.decode("utf-8-sig")), inline=inline)
+    # 自定义规则优先，保留用户填写的顺序；不改动上游快照。
+    if custom_rules is not None:
+        if not isinstance(custom_rules, list):
+            raise ValueError("自定义 rules 必须为列表")
+        result["rules"] = custom_rules + result["rules"]
+        validate_routing(result)
     header = (
         "# 3x-ui Clash/Mihomo 全局路由片段；请与面板生成的订阅合并使用。\n"
         "# 节点由面板的 PROXY 组提供；地区组与自动测速组已合并到 PROXY。\n"
@@ -240,12 +269,17 @@ def main() -> int:
     parser.add_argument("--input", default=DEFAULT_SOURCE, help="HTTPS 地址或本地 YAML 路径")
     parser.add_argument("--output", type=Path, help="输出路径；默认按远程/内联模式选择文件名")
     parser.add_argument("--inline", action="store_true", help="生成可直接粘贴到面板的内联版本")
+    parser.add_argument("--custom-rules", type=Path, help="自定义规则路径；默认读取项目根目录 custom_rules.yaml")
     args = parser.parse_args()
     if args.output is None:
         args.output = Path("Custom_Clash_3xui_inline.yaml" if args.inline else "Custom_Clash_3xui.yaml")
     try:
+        custom_rules = read_custom_rules(
+            args.custom_rules if args.custom_rules is not None else DEFAULT_CUSTOM_RULES,
+            optional=args.custom_rules is None,
+        )
         raw = read_source(args.input)
-        content, result, collapsed = build_output(raw, inline=args.inline)
+        content, result, collapsed = build_output(raw, inline=args.inline, custom_rules=custom_rules)
         write_atomic(args.output, content)
     except (OSError, ValueError, yaml.YAMLError) as error:
         print(f"转换失败：{error}", file=sys.stderr)
