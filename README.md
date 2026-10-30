@@ -15,10 +15,10 @@
 2. 把 `Custom_Clash_3xui_inline.yaml` 的**完整文本**粘贴到 Clash 全局路由规则输入框，替换原来的远程 URL，然后保存。直接粘贴可绕过面板抓取远程模板的网络问题。
 3. 在支持 Mihomo 的客户端中重新更新面板生成的订阅，使用规则模式。在 `PROXY` 组中选择需要的节点。
 
-如果使用远程 URL，公开仓库 `EthanLin1248/3xuiClashRules` 发布后，可在同一输入框填写以下直达地址：
+如果使用远程 URL，公开仓库 `HCLovely/9ff16808784d57634ea2` 发布后，可在同一输入框填写以下直达地址：
 
 ```text
-https://raw.githubusercontent.com/EthanLin1248/3xuiClashRules/main/Custom_Clash_3xui.yaml
+https://raw.githubusercontent.com/HCLovely/9ff16808784d57634ea2/main/Custom_Clash_3xui.yaml
 ```
 
 使用 URL 后，GitHub Actions 的后续更新会保留这个地址。面板按自身缓存策略刷新，客户端还需更新订阅才能获得新规则。本机磁盘路径不能作为面板服务器的远程 URL。
