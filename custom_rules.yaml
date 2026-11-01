@@ -17,6 +17,7 @@ rules:
   - SRC-PORT,28596,DIRECT
   - DST-PORT,28596,DIRECT
   - DOMAIN-SUFFIX,tailscale.com,🚀 手动选择 #匹配域名后缀(交由Proxy代理服务器组)
+  - DOMAIN-SUFFIX,vyaq8tnv5io0p0.xyz,DIRECT
   - DOMAIN-SUFFIX,ddnsto.net,DIRECT #匹配域名后缀(交由Proxy代理服务器组)
   - DOMAIN-SUFFIX,key-hub.eu,DIRECT #匹配域名后缀(交由Proxy代理服务器组)
   - DOMAIN-SUFFIX,alienwarearena.com,🚀 手动选择
