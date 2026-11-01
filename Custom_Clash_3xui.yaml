@@ -237,6 +237,7 @@ rules:
 - SRC-PORT,28596,DIRECT
 - DST-PORT,28596,DIRECT
 - DOMAIN-SUFFIX,tailscale.com,🚀 手动选择
+- DOMAIN-SUFFIX,vyaq8tnv5io0p0.xyz,DIRECT
 - DOMAIN-SUFFIX,ddnsto.net,DIRECT
 - DOMAIN-SUFFIX,key-hub.eu,DIRECT
 - DOMAIN-SUFFIX,alienwarearena.com,🚀 手动选择
