@@ -27,6 +27,17 @@ DEFAULT_SOURCE = (
 MAX_BYTES = 2 * 1024 * 1024
 DEFAULT_CUSTOM_RULES = Path(__file__).resolve().parent / "custom_rules.yaml"
 BUILTINS = {"DIRECT", "REJECT", "REJECT-DROP", "REJECT-TINYGIF", "PASS", "GLOBAL"}
+IP_GROUP_NAMES = ("原生IP", "机房IP")
+NATIVE_IP_SUFFIX = "WNTT$"
+DEFAULT_IP_GROUPS = {
+    "🚀 手动选择": "机房IP",
+    "🌐 社交媒体": "原生IP",
+    "🤖 ChatGPT": "原生IP",
+    "🤖 AI服务": "原生IP",
+    "🎶 TikTok": "原生IP",
+    "🛒 国外电商": "原生IP",
+    "💬 即时通讯": "原生IP",
+}
 
 
 def read_custom_rules(path: Path, optional: bool = False) -> list[str]:
@@ -159,7 +170,7 @@ def validate_routing(document: dict) -> None:
 
 
 def convert(document: dict, inline: bool = False) -> tuple[dict, list[str]]:
-    """保留非地区策略组及独立节点选择能力，移除依赖地区筛选的组。
+    """保留非地区策略组及独立节点选择能力，按节点名称后缀增加 IP 分组。
 
     使用 Mihomo 的 include-all-proxies 动态收集面板节点，代替远程片段
     禁止使用的 use。带 filter 的提供者测速组视为地区组；无地区过滤
@@ -178,6 +189,8 @@ def convert(document: dict, inline: bool = False) -> tuple[dict, list[str]]:
         name = group["name"]
         if name == "PROXY":
             raise ValueError("输入模板占用了面板保留组名 PROXY")
+        if name in IP_GROUP_NAMES:
+            raise ValueError(f"输入模板占用了自动生成的 IP 分组名称：{name}")
         if not name.strip() or name != name.strip() or name in names:
             raise ValueError(f"输入策略组名称为空、重复或含首尾空格：{name}")
         names.append(name)
@@ -205,12 +218,36 @@ def convert(document: dict, inline: bool = False) -> tuple[dict, list[str]]:
         # 每个业务组分别收集实际节点，可以独立选择，避免共用 PROXY 选择状态。
         if original.get("use"):
             group["include-all-proxies"] = True
+        # 为可选择代理的业务组提供分类入口；未指定默认分类的组保留原默认选择。
+        # 直连/拦截等仅包含内置策略的组，以及自动测速组，保持原有用途。
+        if original["type"] == "select" and (
+            original.get("use") or any(ref not in BUILTINS for ref in mapped)
+        ):
+            group.setdefault("proxies", []).extend(IP_GROUP_NAMES)
+            # select 默认使用首个候选项，将用户指定的分类移至首位。
+            default_ip_group = DEFAULT_IP_GROUPS.get(original["name"])
+            if default_ip_group is not None:
+                group["proxies"].remove(default_ip_group)
+                group["proxies"].insert(0, default_ip_group)
         # 自动选择保留测试地址、周期和容差，业务 select 不添加无关测速参数。
         if original["type"] == "url-test":
             for key in ("url", "interval", "tolerance", "lazy", "timeout", "max-failed-times", "expected-status"):
                 if key in original:
                     group[key] = copy.deepcopy(original[key])
         groups.append(group)
+
+    # 直接筛选面板节点，不通过 PROXY 中转，确保两个分类互斥。
+    # 大写 WNTT 必须出现在名称末尾；反向分类使用 exclude-filter。
+    groups.extend([
+        {
+            "name": IP_GROUP_NAMES[0], "type": "select",
+            "include-all-proxies": True, "filter": NATIVE_IP_SUFFIX,
+        },
+        {
+            "name": IP_GROUP_NAMES[1], "type": "select",
+            "include-all-proxies": True, "exclude-filter": NATIVE_IP_SUFFIX,
+        },
+    ])
 
     rules = copy.deepcopy(document.get("rules", []))
     if not isinstance(rules, list):
@@ -270,6 +307,7 @@ def build_output(
     header = (
         "# 3x-ui Clash/Mihomo 全局路由片段；请与面板生成的订阅合并使用。\n"
         "# 节点由面板提供；保留业务独立选点和自动测速，移除地区分组。\n"
+        "# 原生IP：节点名称以 WNTT 结尾；机房IP：其余节点（区分大小写）。\n"
         f"# 输入 SHA256: {hashlib.sha256(raw).hexdigest()}\n"
     )
     content = header + yaml.safe_dump(result, allow_unicode=True, sort_keys=False, width=120)

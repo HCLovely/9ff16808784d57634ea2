@@ -1,11 +1,14 @@
 # 3x-ui Clash/Mihomo 全局路由片段；请与面板生成的订阅合并使用。
 # 节点由面板提供；保留业务独立选点和自动测速，移除地区分组。
+# 原生IP：节点名称以 WNTT 结尾；机房IP：其余节点（区分大小写）。
 # 输入 SHA256: d58c4a5ce8bf325bd9f7787204dd92aa7b7085dd86433b23d2a20b4ed3e1f69e
 proxy-groups:
 - name: 🚀 手动选择
   type: select
   proxies:
+  - 机房IP
   - ♻️ 自动选择
+  - 原生IP
   include-all-proxies: true
 - name: ♻️ 自动选择
   type: url-test
@@ -16,15 +19,19 @@ proxy-groups:
 - name: 💬 即时通讯
   type: select
   proxies:
+  - 原生IP
   - 🚀 手动选择
   - ♻️ 自动选择
   - 🎯 全球直连
+  - 机房IP
 - name: 🌐 社交媒体
   type: select
   proxies:
+  - 原生IP
   - 🚀 手动选择
   - ♻️ 自动选择
   - 🎯 全球直连
+  - 机房IP
   include-all-proxies: true
 - name: 🚀 GitHub
   type: select
@@ -32,53 +39,71 @@ proxy-groups:
   - 🚀 手动选择
   - ♻️ 自动选择
   - 🎯 全球直连
+  - 原生IP
+  - 机房IP
 - name: 🤖 ChatGPT
   type: select
   proxies:
+  - 原生IP
   - 🚀 手动选择
   - ♻️ 自动选择
+  - 机房IP
   include-all-proxies: true
 - name: 🤖 AI服务
   type: select
   proxies:
+  - 原生IP
   - 🚀 手动选择
   - ♻️ 自动选择
+  - 机房IP
   include-all-proxies: true
 - name: 🎶 TikTok
   type: select
   proxies:
+  - 原生IP
   - 🚀 手动选择
   - ♻️ 自动选择
+  - 机房IP
   include-all-proxies: true
 - name: 📹 YouTube
   type: select
   proxies:
   - 🚀 手动选择
   - ♻️ 自动选择
+  - 原生IP
+  - 机房IP
   include-all-proxies: true
 - name: 🎥 Netflix
   type: select
   proxies:
   - 🚀 手动选择
   - ♻️ 自动选择
+  - 原生IP
+  - 机房IP
   include-all-proxies: true
 - name: 🎥 DisneyPlus
   type: select
   proxies:
   - 🚀 手动选择
   - ♻️ 自动选择
+  - 原生IP
+  - 机房IP
   include-all-proxies: true
 - name: 🎥 HBO
   type: select
   proxies:
   - 🚀 手动选择
   - ♻️ 自动选择
+  - 原生IP
+  - 机房IP
   include-all-proxies: true
 - name: 🎥 PrimeVideo
   type: select
   proxies:
   - 🚀 手动选择
   - ♻️ 自动选择
+  - 原生IP
+  - 机房IP
   include-all-proxies: true
 - name: 🎥 AppleTV+
   type: select
@@ -86,6 +111,8 @@ proxy-groups:
   - 🚀 手动选择
   - ♻️ 自动选择
   - 🎯 全球直连
+  - 原生IP
+  - 机房IP
   include-all-proxies: true
 - name: 🎥 Emby
   type: select
@@ -93,6 +120,8 @@ proxy-groups:
   - 🚀 手动选择
   - ♻️ 自动选择
   - 🎯 全球直连
+  - 原生IP
+  - 机房IP
   include-all-proxies: true
 - name: 🎻 Spotify
   type: select
@@ -100,25 +129,33 @@ proxy-groups:
   - 🚀 手动选择
   - ♻️ 自动选择
   - 🎯 全球直连
+  - 原生IP
+  - 机房IP
   include-all-proxies: true
 - name: 📺 Bahamut
   type: select
   proxies:
   - 🚀 手动选择
   - 🎯 全球直连
+  - 原生IP
+  - 机房IP
   include-all-proxies: true
 - name: 🌎 国外媒体
   type: select
   proxies:
   - 🚀 手动选择
   - ♻️ 自动选择
+  - 原生IP
+  - 机房IP
   include-all-proxies: true
 - name: 🛒 国外电商
   type: select
   proxies:
+  - 原生IP
   - 🚀 手动选择
   - ♻️ 自动选择
   - 🎯 全球直连
+  - 机房IP
   include-all-proxies: true
 - name: 📢 谷歌FCM
   type: select
@@ -126,11 +163,15 @@ proxy-groups:
   - 🚀 手动选择
   - ♻️ 自动选择
   - 🎯 全球直连
+  - 原生IP
+  - 机房IP
 - name: 🇬 谷歌服务
   type: select
   proxies:
   - 🚀 手动选择
   - ♻️ 自动选择
+  - 原生IP
+  - 机房IP
   include-all-proxies: true
 - name: 🍎 苹果服务
   type: select
@@ -138,6 +179,8 @@ proxy-groups:
   - 🎯 全球直连
   - 🚀 手动选择
   - ♻️ 自动选择
+  - 原生IP
+  - 机房IP
   include-all-proxies: true
 - name: Ⓜ️ 微软服务
   type: select
@@ -145,6 +188,8 @@ proxy-groups:
   - 🎯 全球直连
   - 🚀 手动选择
   - ♻️ 自动选择
+  - 原生IP
+  - 机房IP
   include-all-proxies: true
 - name: 🎮 游戏平台
   type: select
@@ -152,6 +197,8 @@ proxy-groups:
   - 🎯 全球直连
   - 🚀 手动选择
   - ♻️ 自动选择
+  - 原生IP
+  - 机房IP
   include-all-proxies: true
 - name: 🎮 Steam
   type: select
@@ -159,6 +206,8 @@ proxy-groups:
   - 🎯 全球直连
   - 🚀 手动选择
   - ♻️ 自动选择
+  - 原生IP
+  - 机房IP
   include-all-proxies: true
 - name: 🚀 测速工具
   type: select
@@ -166,6 +215,8 @@ proxy-groups:
   - 🎯 全球直连
   - 🚀 手动选择
   - ♻️ 自动选择
+  - 原生IP
+  - 机房IP
   include-all-proxies: true
 - name: 🐟 漏网之鱼
   type: select
@@ -173,16 +224,28 @@ proxy-groups:
   - 🚀 手动选择
   - ♻️ 自动选择
   - 🎯 全球直连
+  - 原生IP
+  - 机房IP
   include-all-proxies: true
 - name: 🔀 非标端口
   type: select
   proxies:
   - 🐟 漏网之鱼
   - 🎯 全球直连
+  - 原生IP
+  - 机房IP
 - name: 🎯 全球直连
   type: select
   proxies:
   - DIRECT
+- name: 原生IP
+  type: select
+  include-all-proxies: true
+  filter: WNTT$
+- name: 机房IP
+  type: select
+  include-all-proxies: true
+  exclude-filter: WNTT$
 rule-providers:
   Nonstandard_Port_Direct:
     behavior: classical
