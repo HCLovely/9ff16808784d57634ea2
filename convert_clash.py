@@ -27,16 +27,18 @@ DEFAULT_SOURCE = (
 MAX_BYTES = 2 * 1024 * 1024
 DEFAULT_CUSTOM_RULES = Path(__file__).resolve().parent / "custom_rules.yaml"
 BUILTINS = {"DIRECT", "REJECT", "REJECT-DROP", "REJECT-TINYGIF", "PASS", "GLOBAL"}
-IP_GROUP_NAMES = ("原生IP", "机房IP")
-NATIVE_IP_SUFFIX = "WNTT$"
+IP_GROUP_NAMES = ("美国住宅IP", "土耳其住宅IP", "机房IP")
+RESIDENTIAL_IP_SUFFIX = "WNTT$"
+# 国家标记必须位于名称开头；英文标记后使用边界或下划线，避免 US 匹配 USER。
+# 仅对国家前缀忽略大小写，末尾 WNTT 仍严格区分大小写。
+RESIDENTIAL_COUNTRY_FILTERS = {
+    "美国住宅IP": r"^(?i:美国|🇺🇸|(?:US|USA|United States|UnitedStates)(?:\b|_)).*WNTT$",
+    "土耳其住宅IP": r"^(?i:土耳其|🇹🇷|(?:TR|TUR|Turkey|Türkiye)(?:\b|_)).*WNTT$",
+}
 DEFAULT_IP_GROUPS = {
     "🚀 手动选择": "机房IP",
-    "🌐 社交媒体": "原生IP",
-    "🤖 ChatGPT": "原生IP",
-    "🤖 AI服务": "原生IP",
-    "🎶 TikTok": "原生IP",
-    "🛒 国外电商": "原生IP",
-    "💬 即时通讯": "原生IP",
+    "🎶 TikTok": "美国住宅IP",
+    "🍎 苹果服务": "美国住宅IP",
 }
 
 
@@ -189,7 +191,7 @@ def convert(document: dict, inline: bool = False) -> tuple[dict, list[str]]:
         name = group["name"]
         if name == "PROXY":
             raise ValueError("输入模板占用了面板保留组名 PROXY")
-        if name in IP_GROUP_NAMES:
+        if name in IP_GROUP_NAMES or name in RESIDENTIAL_COUNTRY_FILTERS:
             raise ValueError(f"输入模板占用了自动生成的 IP 分组名称：{name}")
         if not name.strip() or name != name.strip() or name in names:
             raise ValueError(f"输入策略组名称为空、重复或含首尾空格：{name}")
@@ -236,18 +238,21 @@ def convert(document: dict, inline: bool = False) -> tuple[dict, list[str]]:
                     group[key] = copy.deepcopy(original[key])
         groups.append(group)
 
-    # 直接筛选面板节点，不通过 PROXY 中转，确保两个分类互斥。
+    # 直接筛选面板节点，不通过 PROXY 中转，确保住宅与机房节点互斥。
     # 大写 WNTT 必须出现在名称末尾；反向分类使用 exclude-filter。
-    groups.extend([
-        {
-            "name": IP_GROUP_NAMES[0], "type": "select",
-            "include-all-proxies": True, "filter": NATIVE_IP_SUFFIX,
-        },
-        {
-            "name": IP_GROUP_NAMES[1], "type": "select",
-            "include-all-proxies": True, "exclude-filter": NATIVE_IP_SUFFIX,
-        },
-    ])
+    for name, country_filter in RESIDENTIAL_COUNTRY_FILTERS.items():
+        groups.append({
+            "name": name,
+            "type": "select",
+            "include-all-proxies": True,
+            "filter": country_filter,
+        })
+    groups.append({
+        "name": "机房IP",
+        "type": "select",
+        "include-all-proxies": True,
+        "exclude-filter": RESIDENTIAL_IP_SUFFIX,
+    })
 
     rules = copy.deepcopy(document.get("rules", []))
     if not isinstance(rules, list):
@@ -306,8 +311,9 @@ def build_output(
         validate_routing(result)
     header = (
         "# 3x-ui Clash/Mihomo 全局路由片段；请与面板生成的订阅合并使用。\n"
-        "# 节点由面板提供；保留业务独立选点和自动测速，移除地区分组。\n"
-        "# 原生IP：节点名称以 WNTT 结尾；机房IP：其余节点（区分大小写）。\n"
+        "# 节点由面板提供；保留业务独立选点和自动测速，移除上游地区分组。\n"
+        "# 美国住宅IP、土耳其住宅IP：按名称前缀识别，均须以大写 WNTT 结尾。\n"
+        "# 机房IP：名称不以大写 WNTT 结尾的节点。\n"
         f"# 输入 SHA256: {hashlib.sha256(raw).hexdigest()}\n"
     )
     content = header + yaml.safe_dump(result, allow_unicode=True, sort_keys=False, width=120)

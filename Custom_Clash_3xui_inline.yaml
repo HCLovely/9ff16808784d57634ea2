@@ -1,6 +1,7 @@
 # 3x-ui Clash/Mihomo 全局路由片段；请与面板生成的订阅合并使用。
-# 节点由面板提供；保留业务独立选点和自动测速，移除地区分组。
-# 原生IP：节点名称以 WNTT 结尾；机房IP：其余节点（区分大小写）。
+# 节点由面板提供；保留业务独立选点和自动测速，移除上游地区分组。
+# 美国住宅IP、土耳其住宅IP：按名称前缀识别，均须以大写 WNTT 结尾。
+# 机房IP：名称不以大写 WNTT 结尾的节点。
 # 输入 SHA256: d58c4a5ce8bf325bd9f7787204dd92aa7b7085dd86433b23d2a20b4ed3e1f69e
 proxy-groups:
 - name: PROXY
@@ -11,7 +12,8 @@ proxy-groups:
   proxies:
   - 机房IP
   - ♻️ 自动选择
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   include-all-proxies: true
 - name: ♻️ 自动选择
   type: url-test
@@ -22,18 +24,20 @@ proxy-groups:
 - name: 💬 即时通讯
   type: select
   proxies:
-  - 原生IP
   - 🚀 手动选择
   - ♻️ 自动选择
   - 🎯 全球直连
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
 - name: 🌐 社交媒体
   type: select
   proxies:
-  - 原生IP
   - 🚀 手动选择
   - ♻️ 自动选择
   - 🎯 全球直连
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 🚀 GitHub
@@ -42,30 +46,34 @@ proxy-groups:
   - 🚀 手动选择
   - ♻️ 自动选择
   - 🎯 全球直连
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
 - name: 🤖 ChatGPT
   type: select
   proxies:
-  - 原生IP
   - 🚀 手动选择
   - ♻️ 自动选择
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 🤖 AI服务
   type: select
   proxies:
-  - 原生IP
   - 🚀 手动选择
   - ♻️ 自动选择
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 🎶 TikTok
   type: select
   proxies:
-  - 原生IP
+  - 美国住宅IP
   - 🚀 手动选择
   - ♻️ 自动选择
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 📹 YouTube
@@ -73,7 +81,8 @@ proxy-groups:
   proxies:
   - 🚀 手动选择
   - ♻️ 自动选择
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 🎥 Netflix
@@ -81,7 +90,8 @@ proxy-groups:
   proxies:
   - 🚀 手动选择
   - ♻️ 自动选择
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 🎥 DisneyPlus
@@ -89,7 +99,8 @@ proxy-groups:
   proxies:
   - 🚀 手动选择
   - ♻️ 自动选择
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 🎥 HBO
@@ -97,7 +108,8 @@ proxy-groups:
   proxies:
   - 🚀 手动选择
   - ♻️ 自动选择
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 🎥 PrimeVideo
@@ -105,7 +117,8 @@ proxy-groups:
   proxies:
   - 🚀 手动选择
   - ♻️ 自动选择
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 🎥 AppleTV+
@@ -114,7 +127,8 @@ proxy-groups:
   - 🚀 手动选择
   - ♻️ 自动选择
   - 🎯 全球直连
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 🎥 Emby
@@ -123,7 +137,8 @@ proxy-groups:
   - 🚀 手动选择
   - ♻️ 自动选择
   - 🎯 全球直连
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 🎻 Spotify
@@ -132,7 +147,8 @@ proxy-groups:
   - 🚀 手动选择
   - ♻️ 自动选择
   - 🎯 全球直连
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 📺 Bahamut
@@ -140,7 +156,8 @@ proxy-groups:
   proxies:
   - 🚀 手动选择
   - 🎯 全球直连
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 🌎 国外媒体
@@ -148,16 +165,18 @@ proxy-groups:
   proxies:
   - 🚀 手动选择
   - ♻️ 自动选择
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 🛒 国外电商
   type: select
   proxies:
-  - 原生IP
   - 🚀 手动选择
   - ♻️ 自动选择
   - 🎯 全球直连
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 📢 谷歌FCM
@@ -166,23 +185,26 @@ proxy-groups:
   - 🚀 手动选择
   - ♻️ 自动选择
   - 🎯 全球直连
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
 - name: 🇬 谷歌服务
   type: select
   proxies:
   - 🚀 手动选择
   - ♻️ 自动选择
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 🍎 苹果服务
   type: select
   proxies:
+  - 美国住宅IP
   - 🎯 全球直连
   - 🚀 手动选择
   - ♻️ 自动选择
-  - 原生IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: Ⓜ️ 微软服务
@@ -191,7 +213,8 @@ proxy-groups:
   - 🎯 全球直连
   - 🚀 手动选择
   - ♻️ 自动选择
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 🎮 游戏平台
@@ -200,7 +223,8 @@ proxy-groups:
   - 🎯 全球直连
   - 🚀 手动选择
   - ♻️ 自动选择
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 🎮 Steam
@@ -209,7 +233,8 @@ proxy-groups:
   - 🎯 全球直连
   - 🚀 手动选择
   - ♻️ 自动选择
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 🚀 测速工具
@@ -218,7 +243,8 @@ proxy-groups:
   - 🎯 全球直连
   - 🚀 手动选择
   - ♻️ 自动选择
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 🐟 漏网之鱼
@@ -227,7 +253,8 @@ proxy-groups:
   - 🚀 手动选择
   - ♻️ 自动选择
   - 🎯 全球直连
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
   include-all-proxies: true
 - name: 🔀 非标端口
@@ -235,16 +262,21 @@ proxy-groups:
   proxies:
   - 🐟 漏网之鱼
   - 🎯 全球直连
-  - 原生IP
+  - 美国住宅IP
+  - 土耳其住宅IP
   - 机房IP
 - name: 🎯 全球直连
   type: select
   proxies:
   - DIRECT
-- name: 原生IP
+- name: 美国住宅IP
   type: select
   include-all-proxies: true
-  filter: WNTT$
+  filter: ^(?i:美国|🇺🇸|(?:US|USA|United States|UnitedStates)(?:\b|_)).*WNTT$
+- name: 土耳其住宅IP
+  type: select
+  include-all-proxies: true
+  filter: ^(?i:土耳其|🇹🇷|(?:TR|TUR|Turkey|Türkiye)(?:\b|_)).*WNTT$
 - name: 机房IP
   type: select
   include-all-proxies: true
